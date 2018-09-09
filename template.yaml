@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Serverless Application Model for contactform-lambda
+Resources:
+  contactform:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: bin/
+      Handler: contactform-lambda
+      Runtime: go1.x
+      Tracing: Active
+      Timeout: 120
+      Environment:
+        Variables:
+          region: us-west-2
+      Events:
+        contactform:
+          Type: Api
+          Properties:
+            Path: /
+            Method: POST
+      Tags:
+        version: "0.0.1"
+      Description: The serverless contact form
+      MemorySize: 128
