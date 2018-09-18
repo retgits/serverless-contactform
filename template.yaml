@@ -23,6 +23,6 @@ Resources:
             Path: /
             Method: POST
       Tags:
-        version: "0.0.1"
+        version: "1.0.0"
       Description: The serverless contact form
       MemorySize: 128

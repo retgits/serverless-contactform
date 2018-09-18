@@ -7,11 +7,6 @@ A serverless tool designed to serve a contactform.
 .                    
 ├── test            
 │   └── event.json      <-- Sample event to test using SAM local
-├── util                
-│   ├── http.go         <-- Utils to interact with HTTP requests
-│   ├── os.go           <-- Utils to interact with the Operating System
-│   ├── s3.go           <-- Utils to interact with Amazon S3
-│   └── ssm.go          <-- Utils to interact with Amazon SSM
 ├── .gitignore          <-- Ignoring the things you do not want in git
 ├── LICENSE             <-- The license file
 ├── main.go             <-- The Lambda code
