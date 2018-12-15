@@ -1,56 +1,53 @@
-# contactform-lambda - A serverless app to serve the contactform
+# serverless-contactform - A serverless app to serve the contactform
 
-A serverless tool designed to serve a contactform.
+A serverless app designed to serve a contactform, running on [ZEIT](https://zeit.co)
 
 ## Layout
+
 ```bash
-.                    
-├── test            
-│   └── event.json      <-- Sample event to test using SAM local
-├── .gitignore          <-- Ignoring the things you do not want in git
-├── LICENSE             <-- The license file
-├── main.go             <-- The Lambda code
-├── Makefile            <-- Makefile to build and deploy
-├── README.md           <-- This file
-└── template.yaml       <-- SAM Template
+.
+├── .env_template <-- A template file with the environment variables needed for the function
+├── .gitignore    <-- Ignoring the things you do not want in git
+├── go.mod
+├── go.sum
+├── index_test.go <-- Tests for the function code
+├── index.go      <-- The actual function code
+├── LICENSE       <-- The license file
+├── Makefile      <-- Makefile to build and deploy
+├── now.json      <-- Deployment descriptor for ZEIT
+└── README.md     <-- This file :)
 ```
 
 ## Installing
-There are a few ways to install this project
 
 ### Get the sources
+
 You can get the sources for this project by simply running
+
 ```bash
-$ go get -u github.com/retgits/contactform-lambda/...
+go get -u github.com/retgits/serverless-contactform/...
 ```
+
+### Update secrets
+
+Update the secrets by running
+
+```bash
+make update-secrets
+```
+
+This command _will_ delete and recreate the secrets. The secrets used are:
+
+* RECAPTCHA_SECRET: The reCAPTCHA secret token you can get from the _Server side integration_ step in [Google reCAPTCHA](https://www.google.com/recaptcha)
+* EMAIL_ADDRESS: The email address to send data to (like _you@example.com_)
+* EMAIL_PASSWORD: The password needed to log in to the SMTP server
+* SMTP_SERVER: The SMTP server
+* SMTP_PORT: The SMTP server port
 
 ### Deploy
-Deploy the Lambda app by running
+
+Deploy the app by running
+
 ```bash
-$ make deploy
+make deploy
 ```
-
-## Parameters
-### AWS Systems Manager parameters
-The code will automatically retrieve the below list of parameters from the AWS Systems Manager Parameter store:
-
-* **/google/recaptcha/secret**: Your reCAPTCHA Secret Token (check the Google reCAPTCHA documentation on how to get this parameter)
-* **/google/recaptcha/email**: A validated email address in SES (check the Google reCAPTCHA documentation on how to get this parameter)
-
-### Deployment parameters
-In the `template.yaml` there are certain deployment parameters:
-
-* **region**: The AWS region in which the code is deployed
-
-## Make targets
-contactform-lambda has a _Makefile_ that can be used for most of the operations
-
-```
-usage: make [target]
-```
-
-* **deps**: Gets all dependencies for this app
-* **clean** : Removes the dist directory
-* **build**: Builds an executable to be deployed to AWS Lambda
-* **test-lambda**: Clean, builds and tests the code by using the AWS SAM CLI
-* **deploy**: Cleans, builds and deploys the code to AWS Lambda

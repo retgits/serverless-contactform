@@ -1,25 +1,27 @@
-# Description: Makefile for AWS Lambda functions 
-# Author: Leon Stigter <lstigter@gmail.com>
-# Last Updated: 2018-09-18
+.PHONY: 
 
-.PHONY: deps clean build deploy test-lambda
+#--- Help ---
+help:
+	@echo 
+	@echo Makefile targets
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@echo
 
-# Variables
-FUNCTION=contactform
-S3=retgits-apps
-
-deps:
+#--- deps ---
+deps: ## Get and update all dependencies
 	go get -u=patch ./...
 
-clean: 
-	rm -rf ./bin
-	
-build:
-	GOOS=linux GOARCH=amd64 go build -o ./bin/$(FUNCTION)-lambda *.go
+#--- test ---
+test: ## Run go test
+	. .env \
+	&& go test ./...
 
-test-lambda: clean build
-	sam local invoke $(FUNCTION) -e ./test/event.json
+#--- update-secrets ---
+update-secrets: ## Update the secrets
+	. .env && now secrets rm recaptcha-secret -y && now secrets add recaptcha-secret $$RECAPTCHA_SECRET
+	. .env && now secrets rm email-address && now secrets add email-address $$EMAIL_ADDRESS
+	. .env && now secrets rm email-password && now secrets add email-password $$EMAIL_PASSWORD
 
-deploy: clean build
-	sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket $(S3)
-	sam deploy --template-file packaged.yaml --stack-name $(FUNCTION)-lambda --capabilities CAPABILITY_IAM
+#--- deploy ---
+deploy: ## deploy the app to Zeit
+	now
