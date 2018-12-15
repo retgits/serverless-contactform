@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "index.go",
+            "use": "@now/go"
+        }
+    ],
+    "env": {
+        "RECAPTCHA_SECRET": "@recaptcha-secret",
+        "EMAIL_ADDRESS": "@email-address",
+        "EMAIL_PASSWORD": "@email-password"
+    }
+}
